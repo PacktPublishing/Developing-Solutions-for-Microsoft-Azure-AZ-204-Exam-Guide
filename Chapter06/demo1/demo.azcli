@@ -1,0 +1,36 @@
+##########################################################################################
+# This commands use files located in the current folder and should be executed locally. 
+# Make sure you install Azure CLI  http://aka.ms/azcli
+##########################################################################################
+
+#create resource group
+az group create -l eastus -n AzureBlobs-RG
+
+# to avoid name collisions generate unique name for your account
+account=azureblobs$RANDOM
+
+#create storage account 
+az storage account create --name $account --resource-group AzureBlobs-RG  
+
+#retrieve key
+key=$(az storage account keys list --account-name $account --query [0].value -o tsv)
+
+#Copy the connection string for further use.
+connectionString=$(az storage account show-connection-string --name $account --resource-group AzureBlobs-RG  -o tsv)  
+
+
+#create storage container by using key
+az storage container create --name products --public-access blob  --account-name $account  --account-key $key
+
+#upload logo file
+az storage blob upload  --account-name $account  --account-key $key --container-name products --file logo.png --name logo.png
+
+#list blobs
+az storage blob show --name logo.png --account-name $account  --account-key $key --container-name products
+
+#list URL to access from Edge
+echo https://$account.blob.core.windows.net/products/logo.png
+
+#echo account name and connection string
+echo $account
+echo $connectionString
