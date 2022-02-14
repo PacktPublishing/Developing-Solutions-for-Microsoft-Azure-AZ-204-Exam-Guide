@@ -1,0 +1,40 @@
+Run following commands from cache console
+---------------------------------------------------
+
+
+set client TheCloudShops      <---  should return your OK
+
+get client                    <--- should return you value from previous command
+
+append client ' best reseller' 
+get client                    <--- now you should get value appended
+
+set count 1              
+incr count                    <--- should increment counter and return 2
+
+--------------------------------------------------------
+
+lpush orders 19
+lpush orders 23-R
+rpush orders 77
+lrange orders 0 -1           <--- should return full list
+
+lpop orders                  <--- should return first element
+
+--------------------------------------------------------
+sadd users user1
+sadd users user2
+scard users                       <--- should return number of element
+smembers users                    <--- should return full set
+srandmember users 1               <--- should return random member
+
+--------------------------------------------------------
+
+hmset mycache sku basic size c0   
+hgetall mycache                         <-- return hash 
+
+--------------------------------------------------------
+
+dbsize                                  <-- number of keys in db
+client list                             <-- list of connected clients
+info                                    <-- full info about instance
