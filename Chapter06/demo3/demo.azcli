@@ -1,0 +1,28 @@
+##########################################################################################
+# This commands use files located in the current folder and should be executed locally. 
+# Make sure you install Azure CLI  http://aka.ms/azcli
+##########################################################################################
+
+#!!! you need to download and install AzCopy tool  http://aka.ms/azcopy
+#!!! copy .EXE file in the current folder. 
+
+#!!! for proper works of the demo you should already has two accounts created from previous demos
+#!!! please update following variables with your accounts names <account1> and <account2>
+
+account1="azureblobs18443"
+account2="azureblobsca14557"
+
+#get keys to generate token
+key1=$(az storage account keys list --account-name $account1 --query [0].value -o tsv)
+key2=$(az storage account keys list --account-name $account2 --query [0].value -o tsv)
+
+#generate tokens
+token1=$(az storage account generate-sas --expiry 2200-01-01 --permissions rw --resource-types sco --services bfqt --https-only --account-name $account1 --account-key $key1 -o tsv)
+token2=$(az storage account generate-sas --expiry 2200-01-01 --permissions rw --resource-types sco --services bfqt --https-only --account-name $account2 --account-key $key2 -o tsv)
+
+#execute copy command
+./azcopy.exe copy https://$account1.blob.core.windows.net/products/logo.png?$token1 https://$account2.blob.core.windows.net/\$web?$token2 
+
+#get page url
+url=$(az storage account show --name $account2 --query "primaryEndpoints.web" --output tsv)
+echo $url

@@ -1,0 +1,18 @@
+#############################################################
+# this command should be executed from Azure Cloud Shell Bash 
+#############################################################
+
+#create resource group
+az group create --location eastus2 --name AzureCache-RG
+
+# to avoid name collisions generate unique name for your account
+account=azurecache$RANDOM
+
+#create Basic SKU instance
+az redis create --location eastus2 --name $account --resource-group AzureCache-RG --sku Basic --vm-size C0
+
+#retrieve key and address 
+$key=$(az redis list-keys --name $account --resource-group AzureCache-RG --query primaryKey -o tsv)
+echo $key
+echo $account.redis.cache.windows.net
+
