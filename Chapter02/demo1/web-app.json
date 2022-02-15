@@ -3,7 +3,8 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "production": {
-            "type": "bool"
+            "type": "bool",
+            "defaultValue: false
         },
         "appPrefix": {
             "type": "string"    
