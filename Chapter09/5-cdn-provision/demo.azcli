@@ -33,7 +33,6 @@ az storage blob upload --name cdn-friday.mp4 -f cdn-friday.mp4 -c files --accoun
 az storage blob upload --name demo.js -f demo.js -c files --account-name $blobaccount --account-key $key
 
 
-
 #you can check direct link to make sure it is available
 echo https://$blobaccount.blob.core.windows.net/files/big.gif
 echo https://$blobaccount.blob.core.windows.net/files/cdn-friday.mp4

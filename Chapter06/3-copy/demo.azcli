@@ -9,8 +9,8 @@
 #!!! for proper works of the demo you should already has two accounts created from previous demos
 #!!! please update following variables with your accounts names <account1> and <account2>
 
-account1="azureblobs18443"
-account2="azureblobsca14557"
+account1=""
+account2=""
 
 #get keys to generate token
 key1=$(az storage account keys list --account-name $account1 --query [0].value -o tsv)
