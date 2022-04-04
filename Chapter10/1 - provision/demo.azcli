@@ -19,25 +19,31 @@ az webapp create  -p $appName-plan -n $appName -g AppInsightsDemo-RG
 #-------------------------------
 az sql server create -n $appName-sql -u myadminuser -p myadmin@Password -g AppInsightsDemo-RG
 az sql db create -s $appName-sql -n $appName-db --service-objective Basic -g AppInsightsDemo-RG
+
+#open firewall to connect from services
+az sql server firewall-rule create -g AppInsightsDemo-RG --server $appName-sql -n 'allowed to connect by Azure resources' --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+
 #retrieve connection string
 sqlstring=$(az sql db show-connection-string -s $appName-sql -n $appName-db  -c ado.net  -o tsv)
 #update user and pwd
 sqlstring=${sqlstring/<username>/myadminuser}
 sqlstring=${sqlstring/<password>/myadmin@Password}
-
+echo $sqlstring
 #-------------------------------
 # Create Storage Account
 #-------------------------------
-az storage account create --name $appName --resource-group AppInsightsDemo-RG  
-#connection string
-blobstring=$(az storage account  show-connection-string --name $appName  -o tsv)
-
+blobname=ai$RANDOM 
+az storage account create --name $blobname --resource-group AppInsightsDemo-RG  
+#connection string, please copy
+blobstring=$(az storage account  show-connection-string --name $blobname  -o tsv)
+echo $blobstring
 #---------------------
 #create Variable
 #--------------------
 az webapp config appsettings set -n $appName --settings SqlConnection="$sqlstring" -g AppInsightsDemo-RG
 az webapp config appsettings set -n $appName --settings BlobConnection="$blobstring" -g AppInsightsDemo-RG
 
+# open page with web app.
 echo "your web app name is: $appName"
 az webapp browse --name $appName --resource-group AppInsightsDemo-RG
 
