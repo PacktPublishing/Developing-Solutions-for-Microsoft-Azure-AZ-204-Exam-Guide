@@ -1,0 +1,25 @@
+##########################################################################################
+# This commands use files located in the current folder and should be executed locally. 
+# Make sure you install Azure CLI  http://aka.ms/azcli
+##########################################################################################
+
+### use bash
+
+#update the name of web app from pervious demo before run other commands. 
+#the app nane from previous run.
+appName=""
+
+# Install CLI extension to provision App Insights
+az extension add -n application-insights
+
+# Create Log analytics workspace
+az monitor log-analytics workspace create -g AppInsightsDemo-RG -n $appName-ai
+
+# Create Application Insights, the resource required a minute to be provisioned
+az monitor app-insights component create --app $appName-ai --location eastus --resource-group AppInsightsDemo-RG --kind web --workspace $appName-ai
+
+# Connect Web App                                          
+az monitor app-insights component connect-webapp -g AppInsightsDemo-RG -a $appName-ai --web-app $appName --enable-profiler --enable-snapshot-debugger
+
+# Return the App Insides key for future use.
+az monitor app-insights component show --app $appName-ai -g AppInsightsDemo-RG --query  "instrumentationKey" --output tsv

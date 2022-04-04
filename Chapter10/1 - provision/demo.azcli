@@ -1,0 +1,45 @@
+##########################################################################################
+# This commands use files located in the current folder and should be executed locally. 
+# Make sure you install Azure CLI  http://aka.ms/azcli
+##########################################################################################
+
+appName=ai-demo$RANDOM
+
+# Create Resource Group
+az group create -l eastus -n AppInsightsDemo-RG
+
+#-------------------------------
+# Create Web App 
+#-------------------------------
+az appservice plan create -n $appName-plan -g AppInsightsDemo-RG  --sku Free
+az webapp create  -p $appName-plan -n $appName -g AppInsightsDemo-RG 
+
+#-------------------------------
+# Create Azure SQL
+#-------------------------------
+az sql server create -n $appName-sql -u myadminuser -p myadmin@Password -g AppInsightsDemo-RG
+az sql db create -s $appName-sql -n $appName-db --service-objective Basic -g AppInsightsDemo-RG
+#retrieve connection string
+sqlstring=$(az sql db show-connection-string -s $appName-sql -n $appName-db  -c ado.net  -o tsv)
+#update user and pwd
+sqlstring=${sqlstring/<username>/myadminuser}
+sqlstring=${sqlstring/<password>/myadmin@Password}
+
+#-------------------------------
+# Create Storage Account
+#-------------------------------
+az storage account create --name $appName --resource-group AppInsightsDemo-RG  
+#connection string
+blobstring=$(az storage account  show-connection-string --name $appName  -o tsv)
+
+#---------------------
+#create Variable
+#--------------------
+az webapp config appsettings set -n $appName --settings SqlConnection="$sqlstring" -g AppInsightsDemo-RG
+az webapp config appsettings set -n $appName --settings BlobConnection="$blobstring" -g AppInsightsDemo-RG
+
+echo "your web app name is: $appName"
+az webapp browse --name $appName --resource-group AppInsightsDemo-RG
+
+
+Allow Azure services and resources to access this serve!!!!

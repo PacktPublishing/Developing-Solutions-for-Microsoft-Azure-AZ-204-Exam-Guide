@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+    <ApplicationInsightsResourceId>/subscriptions/e52566ba-42d2-462a-903c-c28a503e8316/resourceGroups/AppInsightsDemo-RG/providers/microsoft.insights/components/demo10406-ai</ApplicationInsightsResourceId>
+  </PropertyGroup>
+
+  <ItemGroup>  
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />  
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />  
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.7" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.15" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>
