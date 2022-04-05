@@ -4,15 +4,21 @@
 # Make sure you install Azure CLI  http://aka.ms/azcli
 ##########################################################################################
 
+#must be updated wiht name of your Web App with App Inisights
+appName=''  
 
 # build and publish binaries to the folder 'publihs'. requred Dot Net Core 5 installed
-dotnet publish 'TheCloudShopsAI/TheCloudShopsAI' -o 'publish'
+dotnet publish 'TheCloudShopsAI' -o 'publish'
 
-# Bash command ZIP, alternative use Send to Zip from windows file explorer
+
+# Bash command ZIP
 zip -r TheCloudShopsAI.zip 'publish/.'
-
-#must be updated wiht name of your Web App with App Inisights
-webappname=''  
+# OR Powerhsell command
+Compress-Archive -Path publish\* -DestinationPath TheCloudShopsAI.zip -force
+#alternative use Send to Zip from windows file explorer
 
 #deploy binaries to the Azure Web App
-az webapp deploy --resource-group appinsightsdemo-rg --name $webappname --type zip --src-path 'TheCloudShopsAI.zip'
+az webapp deploy --resource-group appinsightsdemo-rg --name $appName --type zip --src-path 'TheCloudShopsAI.zip'
+
+#check the webapp
+az webapp browse --name $appName --resource-group AppInsightsDemo-RG

@@ -3,7 +3,7 @@
 # Make sure you install Azure CLI  http://aka.ms/azcli
 ##########################################################################################
 
-appName=ai-demo$RANDOM
+appName=aidemo$RANDOM
 
 # Create Resource Group
 az group create -l eastus -n AppInsightsDemo-RG
@@ -11,14 +11,14 @@ az group create -l eastus -n AppInsightsDemo-RG
 #-------------------------------
 # Create Web App 
 #-------------------------------
-az appservice plan create -n $appName-plan -g AppInsightsDemo-RG  --sku Free
-az webapp create  -p $appName-plan -n $appName -g AppInsightsDemo-RG 
+az appservice plan create -n $appName-plan -g AppInsightsDemo-RG  --sku Basic
+az webapp create  -p $appName-plan -n $appName -g AppInsightsDemo-RG --runtime 'DOTNET|5.0'
 
 #-------------------------------
 # Create Azure SQL
 #-------------------------------
 az sql server create -n $appName-sql -u myadminuser -p myadmin@Password -g AppInsightsDemo-RG
-az sql db create -s $appName-sql -n $appName-db --service-objective Basic -g AppInsightsDemo-RG
+az sql db create -s $appName-sql -n $appName-db --service-objective Basic -g AppInsightsDemo-RG 
 
 #open firewall to connect from services
 az sql server firewall-rule create -g AppInsightsDemo-RG --server $appName-sql -n 'allowed to connect by Azure resources' --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
@@ -32,10 +32,9 @@ echo $sqlstring
 #-------------------------------
 # Create Storage Account
 #-------------------------------
-blobname=ai$RANDOM 
-az storage account create --name $blobname --resource-group AppInsightsDemo-RG  
+az storage account create --name $appName --resource-group AppInsightsDemo-RG  
 #connection string, please copy
-blobstring=$(az storage account  show-connection-string --name $blobname  -o tsv)
+blobstring=$(az storage account  show-connection-string --name $appName  -o tsv)
 echo $blobstring
 #---------------------
 #create Variable
@@ -47,5 +46,3 @@ az webapp config appsettings set -n $appName --settings BlobConnection="$blobstr
 echo "your web app name is: $appName"
 az webapp browse --name $appName --resource-group AppInsightsDemo-RG
 
-
-Allow Azure services and resources to access this serve!!!!

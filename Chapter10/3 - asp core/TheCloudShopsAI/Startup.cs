@@ -21,7 +21,8 @@ namespace TheCloudShopsAI
         {
             var builder = new ConfigurationBuilder()
                      .SetBasePath(env.ContentRootPath)
-                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                     .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
 
@@ -30,13 +31,18 @@ namespace TheCloudShopsAI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var sqlConnection = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SqlConnection")) ? Configuration.GetConnectionString("SqlConnection") : Environment.GetEnvironmentVariable("SqlConnection");
+
             services.AddDbContext<ShopContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(sqlConnection));
 
             services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
 
             services.AddControllersWithViews();
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
+            var aiConnection = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPINSIGHTS_CONNECTIONSTRING")) ? Configuration["APPINSIGHTS_CONNECTIONSTRING"] : Environment.GetEnvironmentVariable("APPINSIGHTS_CONNECTIONSTRING");
+
+            services.AddApplicationInsightsTelemetry(aiConnection);
 
         }
 

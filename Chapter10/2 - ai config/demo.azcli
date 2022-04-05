@@ -18,8 +18,18 @@ az monitor log-analytics workspace create -g AppInsightsDemo-RG -n $appName-ai
 # Create Application Insights, the resource required a minute to be provisioned
 az monitor app-insights component create --app $appName-ai --location eastus --resource-group AppInsightsDemo-RG --kind web --workspace $appName-ai
 
-# Connect Web App                                          
-az monitor app-insights component connect-webapp -g AppInsightsDemo-RG -a $appName-ai --web-app $appName --enable-profiler --enable-snapshot-debugger
 
 # Return the App Insides key for future use.
-az monitor app-insights component show --app $appName-ai -g AppInsightsDemo-RG --query  "instrumentationKey" --output tsv
+instrumentation=$(az monitor app-insights component show --app $appName-ai -g AppInsightsDemo-RG --query  "connectionString" --output tsv)
+echo $instrumentation
+
+# Update App insights key for Web App
+az webapp config appsettings set -n $appName --settings APPLICATIONINSIGHTS_CONNECTION_STRING=$instrumentation -g AppInsightsDemo-RG
+az webapp config appsettings set -n $appName --settings ApplicationInsightsAgent_EXTENSION_VERSION=~2 -g AppInsightsDemo-RG
+az webapp config appsettings set -n $appName --settings DiagnosticServices_EXTENSION_VERSION=~3 -g AppInsightsDemo-RG
+az webapp config appsettings set -n $appName --settings InstrumentationEngine_EXTENSION_VERSION=~1 -g AppInsightsDemo-RG
+az webapp config appsettings set -n $appName --settings SnapshotDebugger_EXTENSION_VERSION=~1 -g AppInsightsDemo-RG
+az webapp config appsettings set -n $appName --settings XDT_MicrosoftApplicationInsights_BaseExtensions=~1 -g AppInsightsDemo-RG
+
+# Connect Web App                                          
+az monitor app-insights component connect-webapp -g AppInsightsDemo-RG -a $appName-ai --web-app $appName --enable-profiler --enable-snapshot-debugger 
