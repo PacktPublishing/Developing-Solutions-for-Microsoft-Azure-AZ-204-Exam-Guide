@@ -3,6 +3,8 @@
 # Make sure you install Azure CLI  http://aka.ms/azcli
 ##########################################################################################
 
+### use bash
+
 appName=aidemo$RANDOM
 
 # Create Resource Group
@@ -11,7 +13,7 @@ az group create -l eastus -n AppInsightsDemo-RG
 #-------------------------------
 # Create Web App 
 #-------------------------------
-az appservice plan create -n $appName-plan -g AppInsightsDemo-RG  --sku Basic
+az appservice plan create -n $appName-plan -g AppInsightsDemo-RG  --sku B1
 az webapp create  -p $appName-plan -n $appName -g AppInsightsDemo-RG --runtime 'DOTNET|5.0'
 
 #-------------------------------

@@ -9,7 +9,8 @@
   <ItemGroup>  
     <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />  
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />  
-    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />  
+    <PackageReference Include="Microsoft.ApplicationInsights.SnapshotCollector" Version="1.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.7" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.15" />

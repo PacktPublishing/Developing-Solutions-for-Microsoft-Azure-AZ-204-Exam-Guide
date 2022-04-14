@@ -16,13 +16,12 @@ namespace TheCloudShopsAI.Data
             context.Database.EnsureCreated();
 
             // Look for any clients.
-            if (context.Clients.Any())
+            if (!context.Clients.Any())
             {
-                return;   // DB has been seeded
-            }
 
-            var clients = new Client[]
-            {
+
+                var clients = new Client[]
+                {
                     new Client{ClientID =1, Name = "Alex"},
                     new Client{ClientID =2, Name = "John"},
                     new Client{ClientID =3, Name = "Ted"},
@@ -32,41 +31,47 @@ namespace TheCloudShopsAI.Data
                     new Client{ClientID =7, Name = "Nino"},
                     new Client{ClientID =8, Name = "Laura"},
                     new Client{ClientID =9, Name = "Mat"}
-            };
-            foreach (Client c in clients)
-            {
-                context.Clients.Add(c);
+                };
+                foreach (Client c in clients)
+                {
+                    context.Clients.Add(c);
+                }
+                context.SaveChanges();
             }
-            context.SaveChanges();
 
-            var orders = new Order[]
+            // Look for any orders.
+            if (!context.Orders.Any())
             {
-                    new Order{  ClientID = 1,   Size=Size.XL, ProductName = "Red T-Short"},
-                    new Order{  ClientID = 2,   Size=Size.XL, ProductName = "Blue T-Short"},
-                    new Order{  ClientID = 3,   Size=Size.M, ProductName = "Yellow T-Short"},
-                    new Order{  ClientID = 4,   Size=Size.S, ProductName = "Orange T-Short"},
-                    new Order{  ClientID = 5,   Size=Size.L, ProductName = "Black Short"},
-                    new Order{  ClientID = 6,   Size=Size.M, ProductName = "Gray Short"},
-                    new Order{  ClientID = 7,   Size=Size.M, ProductName = "Blue Short"},
-                    new Order{  ClientID = 8,   Size=Size.S, ProductName = "White Hat"},
-                    new Order{  ClientID = 9,   Size=Size.L, ProductName = "Green Hat"},
-                    new Order{  ClientID = 1,   Size=Size.L, ProductName = "Blue Hat"},
-                    new Order{  ClientID = 2,   Size=Size.S, ProductName = "Yellow Hat"},
-            };
 
-            var blob = BlobRepo.GetInstance;
-            blob.Initilize();
-            
-            var container = blob.GetContainer().Result;
+                var orders = new Order[]
+                {
+                        new Order{  ClientID = 1,   Size=Size.XL, ProductName = "Red T-Short"},
+                        new Order{  ClientID = 2,   Size=Size.XL, ProductName = "Blue T-Short"},
+                        new Order{  ClientID = 3,   Size=Size.M, ProductName = "Yellow T-Short"},
+                        new Order{  ClientID = 4,   Size=Size.S, ProductName = "Orange T-Short"},
+                        new Order{  ClientID = 5,   Size=Size.L, ProductName = "Black Short"},
+                        new Order{  ClientID = 6,   Size=Size.M, ProductName = "Gray Short"},
+                        new Order{  ClientID = 7,   Size=Size.M, ProductName = "Blue Short"},
+                        new Order{  ClientID = 8,   Size=Size.S, ProductName = "White Hat"},
+                        new Order{  ClientID = 9,   Size=Size.L, ProductName = "Green Hat"},
+                        new Order{  ClientID = 1,   Size=Size.L, ProductName = "Blue Hat"},
+                        new Order{  ClientID = 2,   Size=Size.S, ProductName = "Yellow Hat"},
+                };
 
-            foreach (Order o in orders)
-            {
-                blob.SaveDescription(o.ProductName, $"{o.ProductName} in the perfect condition of size {o.Size}", container).Wait();
-                context.Orders.Add(o);
+
+                var blob = BlobRepo.GetInstance;
+                blob.Initilize();
+
+                var container = blob.GetContainer().Result;
+
+                foreach (Order o in orders)
+                {
+                    blob.SaveDescription(o.ProductName, $"{o.ProductName} in the perfect condition of size {o.Size}", container).Wait();
+                    context.Orders.Add(o);
+                }
+                context.SaveChanges();
+
             }
-            context.SaveChanges();
-
-
 
 
         }
