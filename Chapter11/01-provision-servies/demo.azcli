@@ -1,0 +1,37 @@
+#################################################################################
+# this commands should be executed from Azure Cloud Shell Bash or local bash shell
+# Azure CLI installation required from http://aka.ms/azcli
+#################################################################################
+
+# generate MVC Core project
+dotnet new webapi -o DemoCatalog -f net5.0 
+
+appName=apim-backend-$RANDOM
+
+# Create Resource Group
+az group create -l eastus -n APIM-RG 
+
+#-------------------------------
+# Create Web App 
+#-------------------------------
+az appservice plan create -n $appName-plan -g APIM-RG --sku B1
+az webapp create  -p $appName-plan -n $appName -g APIM-RG  --runtime 'DOTNET|5.0'
+# enable swagger support
+az webapp config appsettings set -n $appName -g APIM-RG --settings ASPNETCORE_ENVIRONMENT=Development
+
+
+# build and publish binaries to the folder 'publihs'. requred Dot Net Core 
+dotnet publish 'DemoCatalog' -o 'publish' -f net5.0
+
+
+# Bash command ZIP
+zip -r DemoCatalog.zip 'publish/.' 
+# OR Powerhsell command
+Compress-Archive -Path publish\* -DestinationPath DemoCatalog.zip -force
+#alternative use Send to Zip from windows file explorer
+
+#deploy binaries to the Azure Web App
+az webapp deploy --resource-group APIM-RG --name $appName --type zip --src-path 'DemoCatalog.zip'
+
+#open the following link to check the webapp
+echo http://$appName.azurewebsites.net/swagger
