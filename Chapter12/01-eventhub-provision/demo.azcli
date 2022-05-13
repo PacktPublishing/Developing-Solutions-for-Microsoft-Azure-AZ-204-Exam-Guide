@@ -1,0 +1,47 @@
+##########################################################################################
+# This commands should be executed in BASH. 
+# Use CloudShell or install Azure CLI  http://aka.ms/azcli locally
+# The output and resources will be used for next step.
+##########################################################################################
+
+# create resource group
+az group create -l eastus -n EventHubDemo-RG
+
+# to avoid name collisions generate unique name for your account
+account=eventhub$RANDOM
+
+# create an Event Hubs namespace. 
+az eventhubs namespace create --name $account --resource-group EventHubDemo-RG -l eastus --sku Standard
+
+# create an event hub. Specify a name for the event hub. 
+az eventhubs eventhub create --name $account --resource-group EventHubDemo-RG --namespace-name $account 
+
+# create a storage account 
+az storage account create --name $account --resource-group EventHubDemo-RG 
+
+# retrieve key
+key=$(az storage account keys list --account-name $account --query [0].value -o tsv)
+
+# create storage container by using key
+az storage container create --name capdate --public-access blob  --account-name $account  --account-key $key
+
+# enable event capturing in storage
+az eventhubs eventhub update --name $account --namespace-name $account --enable-capture  --destination-name EventHubArchive.AzureBlockBlob --storage-account $account --blob-container capdate --resource-group EventHubDemo-RG 
+
+# enable event capturing in storage
+az eventhubs eventhub authorization-rule create --name apps --rights Listen Send --eventhub-name $account --namespace-name $account --resource-group EventHubDemo-RG 
+
+# output the account
+echo 'you eventhub account name: '$account
+
+# retrieve eventhub connection string for next demo code
+echo 'your eventhub connection string:'
+az eventhubs eventhub authorization-rule keys list --name apps --eventhub-name $account --namespace-name $account --resource-group EventHubDemo-RG --query primaryConnectionString
+
+# retrieve storage connection string for next demo code
+echo 'your storage account connection string:'
+az storage account show-connection-string --name $account --resource-group EventHubDemo-RG --query connectionString
+
+
+# do not delete the provision resources, it will be required for next step
+
