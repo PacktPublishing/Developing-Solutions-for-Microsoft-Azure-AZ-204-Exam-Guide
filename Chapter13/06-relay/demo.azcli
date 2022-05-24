@@ -1,0 +1,27 @@
+##########################################################################################
+# This commands should be executed in BASH. 
+# Use CloudShell or install Azure CLI  http://aka.ms/azcli locally
+# The output and resources will be used for next step.
+##########################################################################################
+
+# create resource group
+az group create -l eastus -n MessagingDemo-RG
+
+# to avoid name collisions generate unique name for your account
+account=relay$RANDOM
+
+# create a relay namespace 
+az relay namespace create --name $account --resource-group MessagingDemo-RG
+
+# create a hybrid relay  
+az relay hyco create --name "relay" --namespace-name $account --resource-group MessagingDemo-RG
+
+# create authorization SAS
+az relay namespace authorization-rule  create --name rw --namespace-name $account --rights Listen Send --resource-group MessagingDemo-RG
+
+# list connection string
+echo 'your connection string:'
+az relay namespace authorization-rule keys list --name rw  --namespace-name $account --resource-group MessagingDemo-RG  --query primaryConnectionString -o tsv
+
+# do not delete the provision resources, it will be required for next step
+

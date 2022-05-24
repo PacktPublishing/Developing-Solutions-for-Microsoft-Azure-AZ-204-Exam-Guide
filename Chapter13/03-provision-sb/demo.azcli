@@ -1,0 +1,40 @@
+##########################################################################################
+# This commands should be executed in BASH. 
+# Use CloudShell or install Azure CLI  http://aka.ms/azcli locally
+# The output and resources will be used for next step.
+##########################################################################################
+
+# create resource group
+az group create -l eastus -n MessagingDemo-RG
+
+# to avoid name collisions generate unique name for your account
+account=sb$RANDOM
+
+# create a service bus namespace 
+az servicebus namespace create --name $account --resource-group MessagingDemo-RG
+
+# create a service bus simple queue 
+az servicebus queue create --name "simple-queue" --namespace-name $account --resource-group MessagingDemo-RG 
+
+# create a service bus session queue 
+az servicebus queue create --name "advanced-queue" --namespace-name $account --resource-group MessagingDemo-RG --enable-partitioning --enable-session --enable-dead-lettering-on-message-expiration
+
+# create a service bus topic 
+az servicebus topic create --name "booking" --namespace-name $account --resource-group MessagingDemo-RG
+
+# create subscription for flight-booking
+az servicebus topic subscription create --name "flight-booking" --topic-name "booking" --namespace-name $account --resource-group MessagingDemo-RG
+
+# create subscription for hotel-booking
+az servicebus topic subscription create --name "hotel-booking" --topic-name "booking" --namespace-name $account --resource-group MessagingDemo-RG
+
+
+# create authorization SAS
+az servicebus namespace authorization-rule create --namespace-name $account --name manage --rights Manage Send Listen --resource-group MessagingDemo-RG
+
+# list connection string
+echo 'your queue connection string:'
+az servicebus namespace authorization-rule keys list --name manage --namespace-name $account --resource-group MessagingDemo-RG --query primaryConnectionString -o tsv
+
+
+# do not delete the provision resources, it will be required for next step

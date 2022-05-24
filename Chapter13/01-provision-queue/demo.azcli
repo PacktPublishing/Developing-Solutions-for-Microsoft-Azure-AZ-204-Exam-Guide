@@ -1,0 +1,28 @@
+##########################################################################################
+# This commands should be executed in BASH. 
+# Use CloudShell or install Azure CLI  http://aka.ms/azcli locally
+# The output and resources will be used for next step.
+##########################################################################################
+
+# create resource group
+az group create -l eastus -n MessagingDemo-RG
+
+# to avoid name collisions generate unique name for your account
+account=msg$RANDOM
+
+# create a storage account 
+az storage account create --name $account --resource-group MessagingDemo-RG 
+
+# retrieve key
+key=$(az storage account keys list --account-name $account --query [0].value -o tsv)
+
+# create storage container by using key
+az storage table create --name demo --account-name $account  --account-key $key
+
+# retrieve storage connection string for next demo code
+echo 'your storage account connection string:'
+az storage account show-connection-string --name $account --resource-group MessagingDemo-RG --query connectionString
+
+
+# do not delete the provision resources, it will be required for next step
+
