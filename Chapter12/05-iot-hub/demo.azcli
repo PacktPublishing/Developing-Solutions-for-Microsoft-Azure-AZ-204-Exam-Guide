@@ -1,0 +1,69 @@
+##########################################################################################
+# This commands should be executed in BASH. 
+# Use CloudShell or install Azure CLI  http://aka.ms/azcli locally
+# The output and resources will be used for next step.
+##########################################################################################
+
+# add extensions
+az extension add --upgrade -n azure-iot
+az extension add --upgrade -n stream-analytics
+
+
+# create resource group
+az group create -l eastus -n IoTHubDemo-RG
+
+# to avoid name collisions generate unique name for your account
+iothub=msg$RANDOM
+
+# create a iot hub  
+az iot hub create --name $iothub --resource-group IoTHubDemo-RG --sku S1
+
+#################################
+# provision input (iot hub)
+#################################
+
+# pull the key
+hubkey=$(az iot hub policy show --name "iothubowner" --hub-name $iothub --query primaryKey -o tsv)
+
+# set-up input 
+input="[{\"name\": \"inhub\",\"properties\": {\"type\": \"Stream\",\"datasource\": {\"type\": \"Microsoft.Devices/IotHubs\",\"properties\": {\"iotHubNamespace\": \"$iothub\",\"sharedAccessPolicyName\": \"iothubowner\",\"sharedAccessPolicyKey\": \"$hubkey\",\"consumerGroupName\": \"\$Default\",\"endpoint\": \"messages/events\"}},\"serialization\": {\"type\": \"Json\",\"properties\": {\"encoding\": \"UTF8\"}}}}]"
+
+#################################
+# provision output (strage)
+#################################
+
+# create a storage account 
+az storage account create --name $iothub --resource-group IoTHubDemo-RG 
+
+# retrieve key
+stkey=$(az storage account keys list --account-name $iothub --query [0].value -o tsv)
+
+#build container for output
+az storage container create --account-name  $iothub --name state --account-key $stkey --auth-mode key
+
+# set-up output
+output="[{\"name\": \"outblob\",\"datasource\": {\"type\": \"Microsoft.Storage/Blob\",\"properties\": {\"storageAccounts\":[{\"accountName\": \"$iothub\",\"accountKey\": \"$stkey\"}],\"container\": \"state\",\"pathPattern\": \"{date}/{time}\",\"dateFormat\": \"yyyy/MM/dd\",\"timeFormat\": \"HH\"}},\"serialization\": {\"type\": \"Json\",\"properties\": {\"encoding\": \"UTF8\"}}}]"
+
+#################################
+# provision transformation
+#################################
+
+# create a stream analitics job
+az stream-analytics job create --job-name $iothub --resource-group IoTHubDemo-RG --output-error-policy "Drop" --data-locale "en-US" --functions "[]"  --inputs "$input" --outputs "$output" 
+
+# create transformation queyry for job
+az stream-analytics transformation create --resource-group IoTHubDemo-RG --job-name $iothub --name Transformation --streaming-units "1" --saql "SELECT * INTO outblob FROM inhub WHERE humidity > 70"
+
+# start job
+az stream-analytics job start --job-name $iothub --resource-group IoTHubDemo-RG --output-start-mode JobStartTime 
+
+#################################
+# provision device
+#################################
+
+# register virtual device
+az iot hub device-identity create -n $iothub -d vdevice 
+
+# retrive connection string for next demo
+echo 'copy device connection string to use in the next demo'
+az iot hub device-identity connection-string show -d vdevice -n $iothub --query connectionString -o tsv
