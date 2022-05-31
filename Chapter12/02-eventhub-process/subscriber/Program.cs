@@ -14,11 +14,7 @@ namespace subscriber
         private const string EventHubConnectionString = "<you event hub connection string from previous script run>";
         private const string StorageConnectionString  = "<you storage account connection string from previous script run>";
 
-        public static void Main(string[] args)
-        {
-            MainAsync(args).GetAwaiter().GetResult();
-        }
-        private static async Task MainAsync(string[] args)
+        private static async Task Main(string[] args)
         {
             // Creates an EventHubsConnectionStringBuilder object from a the connection string, and sets the EntityPath.
             // Typically the connection string should have the Entity Path in it, but for the sake of this simple scenario

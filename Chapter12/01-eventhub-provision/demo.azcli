@@ -36,11 +36,11 @@ echo 'you eventhub account name: '$account
 
 # retrieve eventhub connection string for next demo code
 echo 'your eventhub connection string:'
-az eventhubs eventhub authorization-rule keys list --name apps --eventhub-name $account --namespace-name $account --resource-group EventHubDemo-RG --query primaryConnectionString
+az eventhubs eventhub authorization-rule keys list --name apps --eventhub-name $account --namespace-name $account --resource-group EventHubDemo-RG --query primaryConnectionString -o tsv
 
 # retrieve storage connection string for next demo code
 echo 'your storage account connection string:'
-az storage account show-connection-string --name $account --resource-group EventHubDemo-RG --query connectionString
+az storage account show-connection-string --name $account --resource-group EventHubDemo-RG --query connectionString -o tsv
 
 
 # do not delete the provision resources, it will be required for next step
