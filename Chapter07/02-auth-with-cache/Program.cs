@@ -2,8 +2,10 @@
 using Microsoft.Identity.Client.Extensions.Msal;
 
 // App registration variables
-const string _clientId = "e13721a3-bba2-4c8e-8123-5f9f6801dc60";
-const string _tenantId = "94fc63c3-bfea-4ef8-8e7c-817fcabf724f";
+const string _clientId = "Put your app/client ID here";
+const string _tenantId = "Put your tenant ID here";
+
+// Cache variables
 string _cacheFileLocation = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AZ-204");
 const string _cacheFilename = "az204-auth.cache";
 
