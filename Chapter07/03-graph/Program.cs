@@ -16,13 +16,6 @@ var app = PublicClientApplicationBuilder
 // These scopes can be added to for demonstration purposes
 string[] scopes = { "User.Read" };
 
-// Acquire a token interactively
-AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
-
-// Output the ID token and access token to console
-Console.WriteLine($"ID:\n{result.IdToken}\n");
-Console.WriteLine($"Access:\n{result.AccessToken}\n");
-
 // Configure authentication provider for making MS Graph calls
 DelegateAuthenticationProvider authProvider = new DelegateAuthenticationProvider(async (request) => {
     try
@@ -53,7 +46,6 @@ var user = await graphClient.Me.Request().GetAsync();
 
 // Customized greeting for the logged-in user
 Console.WriteLine($"Hello, {user.GivenName}! Your name was obtained from MS Graph.\n"); 
-
 
 // Method to obtain a token, trying to obtain from the local user token cache first, and then interactively if unable to from cache
 async Task<string> ObtainTokenAsync(IPublicClientApplication app)
