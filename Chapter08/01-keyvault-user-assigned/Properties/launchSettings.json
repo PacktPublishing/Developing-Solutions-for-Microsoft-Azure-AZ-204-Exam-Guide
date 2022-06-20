@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "_01_keyvault_user_assigned": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7249",
+      "launchBrowser": false
+    }
+  }
+}
