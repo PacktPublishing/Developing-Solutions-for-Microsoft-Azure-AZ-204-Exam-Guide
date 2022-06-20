@@ -1,0 +1,9 @@
+﻿@page
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h1>Message: @Configuration["Chapter8:DemoApp:Greeting"]</h1>
