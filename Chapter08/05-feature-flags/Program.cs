@@ -19,7 +19,8 @@ builder.Host.ConfigureAppConfiguration((hostingContext, builder) =>
                .ConfigureRefresh(refreshOptions =>
                {
                    refreshOptions.Register("demofeature");
-               });
+               })
+               .Select(KeyFilter.Any, hostingContext.HostingEnvironment.EnvironmentName);
     });
 });
 
@@ -31,6 +32,9 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+// Use the App Configuration middleware for dynamic refresh
+app.UseAzureAppConfiguration();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -38,9 +42,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-// Use the App Configuration middleware for dynamic refresh
-app.UseAzureAppConfiguration();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
