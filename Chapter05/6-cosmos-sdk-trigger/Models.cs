@@ -14,7 +14,7 @@ namespace TheCloudShopsTriggerTest
         public string id { get; set; }
         public string OrderNumber { get; set; }
         public Address OrderAddress { get; set; }
-        public Customer OrderCustiomer { get; set; }
+        public Customer OrderCustomer { get; set; }
         public OrderItem[] OrderItems { get; set; }
 
         public override string ToString()
