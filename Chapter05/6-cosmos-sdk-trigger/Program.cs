@@ -130,7 +130,7 @@ namespace TheCloudShopsTriggerTest
             {
                 id = "o10",
                 OrderNumber = "NL-24",
-                OrderCustiomer = customer4,
+                OrderCustomer = customer4,
                 OrderAddress = new Address { State = "WA", County = "King", City = "Redmond" },
                 OrderItems = new[] {
                     new OrderItem() { ProductItem = product5, Count = 1 }
@@ -141,7 +141,7 @@ namespace TheCloudShopsTriggerTest
             {
                 id = "o11",
                 OrderNumber = "NL-25",
-                OrderCustiomer = null,  // the customer is not defined.
+                OrderCustomer = null,  // the customer is not defined.
                 OrderAddress = new Address { State = "WA", County = "King", City = "Seattle" },
                 OrderItems = new[] {
                     new OrderItem() { ProductItem = product5, Count = 1 }
