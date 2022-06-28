@@ -17,9 +17,6 @@ az storage entity insert  --account-name $account --account-key $key --entity Pa
 az storage entity insert  --account-name $account --account-key $key --entity PartitionKey=ReSellers RowKey=Woodgrow IsActive=true IsActive@odata.type=Edm.Boolean --if-exists fail --table-name customers
 az storage entity insert  --account-name $account --account-key $key --entity PartitionKey=Sellers RowKey=TailSpinToys IsActive=false IsActive@odata.type=Edm.Boolean --if-exists fail --table-name customers
 
-#url for accessing to the table through REST
-echo https://$account.table.core.windows.net/customers\(\)
-
 #direct access will not work so we need to generate SAS
 sas=$(az storage table generate-sas --name customers  --account-name $account --account-key $key --permissions r --expiry 2200-01-01)
 #replase quotes 
