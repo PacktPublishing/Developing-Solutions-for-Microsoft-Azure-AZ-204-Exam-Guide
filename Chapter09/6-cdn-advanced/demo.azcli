@@ -17,7 +17,7 @@ key=$(az storage account keys list  --account-name $blobaccount --query "[0].{Na
 sed -i "s/<cdn>/$cdnaccount.azureedge.net/" index.html 
 
 #upload HTML to the folder
-az storage blob upload  --account-name $blobaccount  --account-key $key --container-name '$web' --file index.html --name index.html
+az storage blob upload  --account-name $blobaccount  --account-key $key --container-name '$web' --file index.html --name index.html --overwrite
 
 #retrieve Static Url
 url=$(az storage account show --name $blobaccount --query "primaryEndpoints.web" --output tsv)
@@ -31,7 +31,7 @@ echo $url
 sed -i "s/hello world/Azure Rocks/" demo.js 
 
 #upload updated JS with extended TTL to 60 minutes
-az storage blob upload --name demo.js --content-cache-control max-age=3600 -f demo.js -c files --account-name $blobaccount --account-key $key
+az storage blob upload --name demo.js --content-cache-control max-age=3600 -f demo.js -c files --account-name $blobaccount --account-key $key --overwrite
 
 echo $url
 #if you complete previous call in the minute before you should still get "hello world!"

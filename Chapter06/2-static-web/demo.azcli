@@ -28,4 +28,4 @@ url=$(az storage account show --name $account --query "primaryEndpoints.web" --o
 echo $url
 
 #test 404
-echo $urlnotfound
+echo $url/notfound
