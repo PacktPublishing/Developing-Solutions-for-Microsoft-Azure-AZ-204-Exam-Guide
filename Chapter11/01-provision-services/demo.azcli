@@ -3,9 +3,6 @@
 # Azure CLI installation required from http://aka.ms/azcli
 #################################################################################
 
-# generate MVC Core project
-dotnet new webapi -o DemoCatalog -f net5.0 
-
 appName=apim-backend-$RANDOM
 
 # Create Resource Group
@@ -15,17 +12,20 @@ az group create -l eastus -n APIM-RG
 # Create Web App 
 #-------------------------------
 az appservice plan create -n $appName-plan -g APIM-RG --sku B1
-az webapp create  -p $appName-plan -n $appName -g APIM-RG  --runtime 'DOTNET|5.0'
+az webapp create  -p $appName-plan -n $appName -g APIM-RG  --runtime 'DOTNET|6.0'
 # enable swagger support
 az webapp config appsettings set -n $appName -g APIM-RG --settings ASPNETCORE_ENVIRONMENT=Development
 
+# generate MVC Core project
+dotnet new webapi -o DemoCatalog -f net6.0 
 
 # build and publish binaries to the folder 'publihs'. requred Dot Net Core 
-dotnet publish 'DemoCatalog' -o 'publish' -f net5.0
+dotnet publish 'DemoCatalog' -o 'publish' -f net6.0
 
 
 # Bash command ZIP
-zip -r DemoCatalog.zip 'publish/.' 
+cd 'publish/'
+zip -r DemoCatalog.zip '.' 
 # OR Powerhsell command
 Compress-Archive -Path publish\* -DestinationPath DemoCatalog.zip -force
 #alternative use Send to Zip from windows file explorer
@@ -34,4 +34,4 @@ Compress-Archive -Path publish\* -DestinationPath DemoCatalog.zip -force
 az webapp deploy --resource-group APIM-RG --name $appName --type zip --src-path 'DemoCatalog.zip'
 
 #open the following link to check the webapp
-echo http://$appName.azurewebsites.net/swagger
+echo https://$appName.azurewebsites.net/swagger
