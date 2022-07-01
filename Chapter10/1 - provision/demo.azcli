@@ -14,7 +14,7 @@ az group create -l eastus -n AppInsightsDemo-RG
 # Create Web App 
 #-------------------------------
 az appservice plan create -n $appName-plan -g AppInsightsDemo-RG  --sku B1
-az webapp create  -p $appName-plan -n $appName -g AppInsightsDemo-RG --runtime 'DOTNET|5.0'
+az webapp create  -p $appName-plan -n $appName -g AppInsightsDemo-RG --runtime 'DOTNET|6.0'
 
 #-------------------------------
 # Create Azure SQL
