@@ -4,7 +4,7 @@
     "parameters": {
         "production": {
             "type": "bool",
-            "defaultValue: false
+            "defaultValue": false
         },
         "appPrefix": {
             "type": "string"    
