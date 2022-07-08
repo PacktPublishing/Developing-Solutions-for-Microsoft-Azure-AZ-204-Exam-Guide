@@ -1,0 +1,65 @@
+﻿@page
+@using Microsoft.AspNetCore.Http
+@model TheCloudShopWebState.IndexModel
+@{
+    ViewData["Title"] = "ASP.NET Core Session State Provider for Azure Cache for Redis";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">            
+            <h3 class="panel-title" style="line-height:2.1">Your Session ID: @Model.CurrentSessionID</h3>
+        </div>
+        <div class="panel-body">
+            <p>Session Msg: @HttpContext.Session.GetString(Model.TheMSGKey)</p>
+            <p>Session ID: @HttpContext.Session.GetString(Model.TheMSGsetSessionKey)</p>
+            <p>Session Msg Set Time: @HttpContext.Session.GetString(Model.TheMSGsetTimeKey)</p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+             Set Session Value: <input type="text" name="msg" value="" />
+            <button type="submit" asp-page-handler="SaveSessionValue" class="pull-right btn btn-danger">Set</button>
+        </div>
+        </div>
+</form>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Configuration</h3>
+    </div>
+    <div class="panel-body">
+        <p>Session state enabled in <b>StartupRedis.cs</b> by adding the following lines to enable the distributed Memory Cache and enabling session. <b>IdelTimeout</b> is responsible for how long the session info will stay in the Redis.</p>
+        <p>
+            <code>
+            builder.Services.AddDistributedMemoryCache();<br/>
+            builder.Services.AddSession(options =><br />
+                {<br />
+                    options.IdleTimeout = TimeSpan.FromSeconds(60);<br />
+                    options.Cookie.HttpOnly = true;<br />
+                    options.Cookie.IsEssential = true;<br />
+                });<br />
+            </code>
+        </p>
+
+        <p>Also, Stack exchange provider for Redis should be added and initialized from <b>appsettings.json</b> file as shown in the following snippet:</p>
+        <code>
+            services.AddStackExchangeRedisCache(options =><br />
+                {<br />
+                    options.Configuration = _config["AzureRedis"];<br />
+                    options.InstanceName = "DemoInstanse";<br />
+                });<br />
+        </code>
+        </div>
+        <div class="panel-heading">
+                <h3 class="panel-title">Testing</h3>
+        </div>
+        <div class="panel-body">
+            <p>You can run the website directly from the Visual Studio. The index page should be open automatically. Notice the Session ID is generated and stays unchanged when you refresh the page. You should open another browser window and navigate to the same address to get the same page with the different Session ID. In each of the browsers, you should enter the different text in the text box to save it in the session. Hit button `set` to save the message. Values on the top of the page should be updated with the value you set in the session. You can repeat it in both browser windows to make sure that sessions are not overlapping. Now you can start and stop the Visual Studio to have the web server restarted and clean the session values. After restart, you can refresh the browser window and the session values should be still retrievable from the session. The session values were restored from Redis. The time of persistence values is configured in <b>options.IdleTimeout</b></p>
+            <p>To observe the session values from Azure Cache for Redis instance you can use following command:</p>
+            <code>SCAN 0 COUNT 1000 MATCH '*'</code>
+        </div>
+</div>
+

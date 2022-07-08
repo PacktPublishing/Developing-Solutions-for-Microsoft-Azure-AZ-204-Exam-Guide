@@ -7,7 +7,7 @@
 account=''
 #web app backedn short name from previous script execution
 webapp=''
-# Swagger URL from previously provisioned weather service. URL must end with /swagger/v1/swagger.json
+# Swagger URL from previously provisioned weather service. URL must ended with /swagger/v1/swagger.json
 url=''
 
 # adding API #1, if adding process produce an error continue to the next adding API step
