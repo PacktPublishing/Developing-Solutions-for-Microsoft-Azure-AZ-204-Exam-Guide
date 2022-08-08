@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <ApplicationInsightsResourceId>/subscriptions/e52566ba-42d2-462a-903c-c28a503e8316/resourceGroups/AppInsightsDemo-RG/providers/microsoft.insights/components/demo10406-ai</ApplicationInsightsResourceId>
   </PropertyGroup>
