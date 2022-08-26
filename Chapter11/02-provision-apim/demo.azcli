@@ -1,0 +1,13 @@
+#################################################################################
+# this commands should be executed from Azure Cloud Shell Bash or local bash shell
+# Azure CLI installation required from http://aka.ms/azcli
+#################################################################################
+
+account=apim-$RANDOM
+
+# provision APIM with consumption price tier might takes up to 3 min.
+az apim create -n $account --location eastus --resource-group APIM-RG --publisher-name $account --publisher-email $account'@demo.com' --sku-name Consumption
+
+# print your APIM name
+echo $account
+
