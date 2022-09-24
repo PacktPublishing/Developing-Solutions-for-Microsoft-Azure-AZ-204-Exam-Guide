@@ -1,66 +1,69 @@
 ##################################################################################################
-# this command should be executed from Azure Cloud Shell Bash or local Bash if you install az tool
-#############################################################
+# These commands use files located in the current folder and should be executed locally. 
+# Make sure you install Azure CLI  http://aka.ms/azcli
+###################################################################################################
 
-#create resource group
+#create the resource group
 az group create --location eastus2 --name AzureCDN-RG
 
-#to avoid name collisions generate unique name for your account
+#to avoid name collisions generate a unique name for your account
 cdnaccount=azure-cdn-$RANDOM
 blobaccount=azureblob$RANDOM
 
 
-#create storage for static file source in South Korea
+#create Azure storage for static file source in South Korea or another faraway region of your choice.
 az storage account create --name $blobaccount --resource-group AzureCDN-RG --location koreasouth
 
-#get key
+#get the key
 key=$(az storage account keys list  --account-name $blobaccount --query "[0].{Name:value}" -o tsv)
 
-#create container
+#create the container
 az storage container create --name files --public-access container --account-name $blobaccount --account-key $key
 
-#save the name for reference
+#output the URL for reference
 echo https://$blobaccount.blob.core.windows.net/files
 
 
-#upload big image
+#upload big image from local folder
 az storage blob upload --name big.gif -f big.gif -c files --account-name $blobaccount --account-key $key
 
-#upload video
-az storage blob upload --name cdn-friday.mp4 -f cdn-friday.mp4 -c files --account-name $blobaccount --account-key $key
+#upload video  from local folder
+az storage blob upload --name cdn-demo.mp4 -f cdn-demo.mp4 -c files --account-name $blobaccount --account-key $key
 
-#upload JS
+#upload JS  from local folder
 az storage blob upload --name demo.js -f demo.js -c files --account-name $blobaccount --account-key $key
 
-
-#you can check direct link to make sure it is available
+#you can check the direct link to make sure the content is available
 echo https://$blobaccount.blob.core.windows.net/files/big.gif
-echo https://$blobaccount.blob.core.windows.net/files/cdn-friday.mp4
+echo https://$blobaccount.blob.core.windows.net/files/cdn-demo.mp4
 
-#enable static web site
+#enable static website
 az storage blob service-properties update --account-name $blobaccount --static-website --index-document index.html --account-key $key
 
-#!!!! Important
-#replace links to files before upload
+########################################################################################
+# Important! 
+# replace links to files before uploading index.html by executing the following command
+########################################################################################
 sed -i "s/<blobaccount>/$blobaccount/" index.html 
 
-#upload HTML to the folder
+#upload index.html to the folder
 az storage blob upload  --account-name $blobaccount  --account-key $key --container-name '$web' --file index.html --name index.html
 
-#retrieve Static Url
+#retrieve static Url
 url=$(az storage account show --name $blobaccount --query "primaryEndpoints.web" --output tsv)
 echo $url
-#you can visit this url from your browser and enable F12 tool to monitor the speed of loading.
+
+#you can visit this URL from your browser and enable F12 tool to monitor the speed of loading.
 
 #create Basic SKU instance
 az cdn profile create --location eastus2 --name $cdnaccount --resource-group AzureCDN-RG --sku Standard_Microsoft
 
-# Create Endpoint for 
+#create CDN endpoint 
 az cdn endpoint create --name $cdnaccount  --origin $blobaccount.blob.core.windows.net --origin-host-header $blobaccount.blob.core.windows.net --origin-path "//files" --profile-name $cdnaccount --resource-group AzureCDN-RG
 
-#now you can test how it works from CDN
+#now you can test how it works from CDN URLs
 echo https://$cdnaccount.azureedge.net/big.gif
-echo https://$cdnaccount.azureedge.net/cdn-friday.mp4
+echo https://$cdnaccount.azureedge.net/cdn-demo.mp4
 
 echo "please save following values for next demo: $cdnaccount" 
 echo "please save following values for next demo: $blobaccount" 

@@ -1,11 +1,11 @@
-#############################################################
-# this command should be executed from Azure Cloud Shell Bash 
-#############################################################
+################################################################
+# These commands should be executed from Azure Cloud Shell bash 
+################################################################
 
-#create resource group
+#create the resource group
 az group create --location eastus2 --name AzureCache-RG
 
-# to avoid name collisions generate unique name for your account
+# to avoid name collisions generate a unique name for your account
 account=azurecache$RANDOM
 
 #create Basic SKU instance

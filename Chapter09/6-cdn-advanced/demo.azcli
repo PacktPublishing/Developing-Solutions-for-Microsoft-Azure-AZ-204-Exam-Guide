@@ -1,44 +1,71 @@
 ##################################################################################################
-# this command should be executed from Azure Cloud Shell Bash or local Bash if you install az tool
-##################################################################################################
+# These commands use files located in the current folder and should be executed locally. 
+# Make sure you install Azure CLI  http://aka.ms/azcli
+###################################################################################################
 
-#make sure you use latest version
-az upgrade
+#create the resource group
+az group create --location eastus2 --name AzureCDN-RG
 
-#update following values from output of previous demo
-cdnaccount=""
-blobaccount=""
+#to avoid name collisions generate a unique name for your account
+cdnaccount=azure-cdn-$RANDOM
+blobaccount=azureblob$RANDOM
 
-#get key
+
+#create Azure storage for static file sources in South Korea or another faraway region of your choice.
+az storage account create --name $blobaccount --resource-group AzureCDN-RG --location koreasouth
+
+#get the key
 key=$(az storage account keys list  --account-name $blobaccount --query "[0].{Name:value}" -o tsv)
 
-#!!!! Important
-#replace links to files before upload
-sed -i "s/<cdn>/$cdnaccount.azureedge.net/" index.html 
+#create the container
+az storage container create --name files --public-access container --account-name $blobaccount --account-key $key
 
-#upload HTML to the folder
-az storage blob upload  --account-name $blobaccount  --account-key $key --container-name '$web' --file index.html --name index.html --overwrite
+#output the URL for reference
+echo https://$blobaccount.blob.core.windows.net/files
 
-#retrieve Static Url
+
+#upload big image from local folder
+az storage blob upload --name big.gif -f big.gif -c files --account-name $blobaccount --account-key $key
+
+#upload video  from local folder
+az storage blob upload --name cdn-demo.mp4 -f cdn-demo.mp4 -c files --account-name $blobaccount --account-key $key
+
+#upload JS  from local folder
+az storage blob upload --name demo.js -f demo.js -c files --account-name $blobaccount --account-key $key
+
+#you can check the direct link to make sure the content is available
+echo https://$blobaccount.blob.core.windows.net/files/big.gif
+echo https://$blobaccount.blob.core.windows.net/files/cdn-demo.mp4
+
+#enable static website
+az storage blob service-properties update --account-name $blobaccount --static-website --index-document index.html --account-key $key
+
+########################################################################################
+# Important! 
+# replace links to files before uploading index.html by executing the following command
+########################################################################################
+sed -i "s/<blobaccount>/$blobaccount/" index.html 
+
+#upload index.html to the folder
+az storage blob upload  --account-name $blobaccount  --account-key $key --container-name '$web' --file index.html --name index.html
+
+#retrieve static Url
 url=$(az storage account show --name $blobaccount --query "primaryEndpoints.web" --output tsv)
 echo $url
-#you can visit this url from your browser and enable F12 tool to monitor the speed 
-#and compare with what you have on previous demo.
 
-#if click on the "click me" you will get "hello world!"
+#you can visit this URL from your browser and enable F12 tool to monitor the speed of loading.
 
-#replace links to files before upload
-sed -i "s/hello world/Azure Rocks/" demo.js 
+#create Basic SKU instance
+az cdn profile create --location eastus2 --name $cdnaccount --resource-group AzureCDN-RG --sku Standard_Microsoft
 
-#upload updated JS with extended TTL to 60 minutes
-az storage blob upload --name demo.js --content-cache-control max-age=3600 -f demo.js -c files --account-name $blobaccount --account-key $key --overwrite
+#create CDN endpoint 
+az cdn endpoint create --name $cdnaccount  --origin $blobaccount.blob.core.windows.net --origin-host-header $blobaccount.blob.core.windows.net --origin-path "//files" --profile-name $cdnaccount --resource-group AzureCDN-RG
 
-echo $url
-#if you complete previous call in the minute before you should still get "hello world!"
-#lets purge content
+#now you can test how it works from CDN URLs
+echo https://$cdnaccount.azureedge.net/big.gif
+echo https://$cdnaccount.azureedge.net/cdn-demo.mp4
 
-az cdn endpoint purge -g AzureCDN-RG --name $cdnaccount  --profile-name $cdnaccount   --content-paths '//demo.js' 
+echo "please save following values for next demo: $cdnaccount" 
+echo "please save following values for next demo: $blobaccount" 
 
-#revisit page again and try click on the button.
-echo $url
 
