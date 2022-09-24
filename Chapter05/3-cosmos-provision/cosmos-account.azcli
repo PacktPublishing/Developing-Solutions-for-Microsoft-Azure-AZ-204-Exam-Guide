@@ -1,15 +1,18 @@
-######################################################
-# this command should be executed from Azure Cloud Shell Bash 
-######################################################
+############################################################
+#These commands should be executed from Azure Cloud Shell bash 
+############################################################
 
-#create resource group
+#create the resource group
 az group create -l canadacentral -n CosmosDB-RG
 
-# to avoid name collisions generate unique name for your DB
+# to avoid name collisions generate the unique name for your DB
 account=cosmosdb-$RANDOM
-#create Cosmos DB account 
+
+#create the Cosmos DB account 
 az cosmosdb create --name $account --resource-group CosmosDB-RG 
+
 #create Cosmos DB database with SQL API
 az cosmosdb sql database create --account-name $account --resource-group CosmosDB-RG --name AZ204Demo 
+
 #create Cosmos DB container
 az cosmosdb sql container create -g CosmosDB-RG  -a $account -d AZ204Demo -n TheCloudShops --partition-key-path "/OrderAddress/City" --throughput "400"
