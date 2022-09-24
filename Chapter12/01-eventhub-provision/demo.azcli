@@ -32,7 +32,7 @@ az eventhubs eventhub update --name $account --namespace-name $account --enable-
 az eventhubs eventhub authorization-rule create --name apps --rights Listen Send --eventhub-name $account --namespace-name $account --resource-group EventHubDemo-RG 
 
 # output the account
-echo 'you eventhub account name: '$account
+echo 'your eventhub account name: '$account
 
 # retrieve eventhub connection string for next demo code
 echo 'your eventhub connection string:'
