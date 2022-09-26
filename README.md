@@ -34,10 +34,10 @@ var app = PublicClientApplicationBuilder
 ```
 When we wish to draw your attention to a particular part of a code block, the relevant lines or items are set in bold:
 <pre>var app = PublicClientApplicationBuilder
-.Create(_clientId)
-.WithAuthority(AzureCloudInstance.AzurePublic, _tenantId)
-.WithRedirectUri(<b>"http://localhost"</b>)
-.Build();</pre>
+    .Create(_clientId)
+    .WithAuthority(AzureCloudInstance.AzurePublic, _tenantId)
+    .WithRedirectUri(<b>"http://localhost"</b>)
+    .Build();</pre>
 
 Any command-line input or output is written as follows:
 <pre><b>$ dotnet new console -n "&lt;app name&gt;"</b></pre>
