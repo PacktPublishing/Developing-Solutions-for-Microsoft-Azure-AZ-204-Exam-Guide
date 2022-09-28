@@ -59,7 +59,9 @@ echo $url
 az cdn profile create --location eastus2 --name $cdnaccount --resource-group AzureCDN-RG --sku Standard_Microsoft
 
 #create CDN endpoint 
-az cdn endpoint create --name $cdnaccount  --origin $blobaccount.blob.core.windows.net --origin-host-header $blobaccount.blob.core.windows.net --origin-path "//files" --profile-name $cdnaccount --resource-group AzureCDN-RG
+az cdn endpoint create --name $cdnaccount  --origin $blobaccount.blob.core.windows.net --origin-host-header $blobaccount.blob.core.windows.net --origin-path "/files" --profile-name $cdnaccount --resource-group AzureCDN-RG
+
+#wait time about 2 minutes
 
 #now you can test how it works from CDN URLs
 echo https://$cdnaccount.azureedge.net/big.gif
