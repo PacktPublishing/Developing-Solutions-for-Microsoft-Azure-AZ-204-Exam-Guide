@@ -37,7 +37,7 @@ echo $url
 #if you complete the previous call the minute before you should still get "hello world!"
 #lets purge content
 
-az cdn endpoint purge -g AzureCDN-RG --name $cdnaccount  --profile-name $cdnaccount   --content-paths '//demo.js' 
+az cdn endpoint purge -g AzureCDN-RG --name $cdnaccount  --profile-name $cdnaccount   --content-paths '/demo.js' 
 
 #revisit page again and try click on the button.
 echo $url
