@@ -83,3 +83,7 @@ Originally from Devon in the UK, Paul currently lives in Cheltenham in the beaut
 is an experienced cloud engineer with a primary focus on supporting companies in their journeys to adopt Azure services. Alex has worked for Microsoft for eight years as a cloud support engineer and four years as an Azure Technical Trainer.
 Alex is an expert in software engineering and digital transformation who has helped many customers to migrate their solutions to Azure. His experience has helped him gain multiple certifications in software development, AI, and data platforms. As a professional trainer, Alex has already educated thousands of clients and helped them to prepare for and pass the Azure certification exams.
 In his free time, while not being jumped on by his three kids, he enjoys camping, boating, running, and building RC models.
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781803237060">https://packt.link/free-ebook/9781803237060 </a> </p>
