@@ -77,6 +77,9 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 Click on the following link to see the Code in Action:
 [Developing Solutions for Microsoft Azure AZ-204 Exam Guide playlist](https://bit.ly/3LtUSAp)
 
+### Update ⚠
+<b>Page 184</b> - The UI for access policy configuration has changed, the blade previously titled "Access policies" is now changed to "Access configuration". <br>
+Please refer Code in Action videos for clarifying any confusion related to it and other possible UI changes.
 
 ### Related products
 * Azure for Developers - Second Edition [[Packt]](https://www.packtpub.com/product/azure-for-developers/9781803240091?utm_source=github&utm_medium=repository&utm_campaign=9781803240091) [[Amazon]](https://www.amazon.com/dp/1803240091)
